@@ -15,6 +15,7 @@ adminRouter.patch('/edit', authenticate, adminValidation, adminController.editAd
 adminRouter.get('/get-all-students', authenticate, adminValidation, adminController.getAllStudents);
 adminRouter.post('/add-student', authenticate, adminValidation, adminController.addStudent);
 adminRouter.patch('/edit-student/:id', authenticate, adminValidation, adminController.editStudent);
+adminRouter.patch('/edit-students', authenticate, adminValidation, adminController.editStudents);
 
 adminRouter.get('/get-all-teachers', authenticate, adminValidation, adminController.getAllTeachers);
 adminRouter.post('/add-teacher', authenticate, adminValidation, adminController.addTeacher);

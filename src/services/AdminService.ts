@@ -133,6 +133,49 @@ export class AdminService {
 		};
 	};
 
+	editStudents = async (studentIds: number[], fieldsToChange: {
+		educationalProgram?: string;
+		course?: string;
+		year?: string;
+		isActive?: boolean;
+		canSelect?: boolean;
+		semester1MinCredits?: number;
+		semester1MaxCredits?: number;
+		semester1Credits?: number;
+		semester2MinCredits?: number;
+		semester2MaxCredits?: number;
+		semester2Credits?: number;
+	}) => {
+		const promises = studentIds.map(async (studentId) => await studentRep.getStudentById(studentId));
+		const students = await Promise.all(promises);
+		const isEveryStudentExists = students.every((student) => student !== undefined);
+		if (!isEveryStudentExists) {
+			return { studentExists: false };
+		}
+
+		const promises_ = studentIds.map(async (studentId) =>
+			await studentRep.editStudentById(studentId, {
+				educationalProgram: fieldsToChange.educationalProgram,
+				course: fieldsToChange.course,
+				year: fieldsToChange.year,
+				isActive: fieldsToChange.isActive,
+				canSelect: fieldsToChange.canSelect,
+				semester1MinCredits: fieldsToChange.semester1MinCredits,
+				semester1MaxCredits: fieldsToChange.semester1MaxCredits,
+				semester1Credits: fieldsToChange.semester1Credits,
+				semester2MinCredits: fieldsToChange.semester2MinCredits,
+				semester2MaxCredits: fieldsToChange.semester2MaxCredits,
+				semester2Credits: fieldsToChange.semester2Credits,
+			})
+		);
+
+		await Promise.all(promises_);
+
+		return {
+			studentExists: true,
+		};
+	};
+
 	getAllTeachers = async (filters?: {
 		email?: string;
 		firstName?: string;
