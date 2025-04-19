@@ -28,11 +28,10 @@ class UserController {
 		const { email } = body;
 		const { userExists, OTP_TTL } = await userService.sendOtp(email);
 		if (userExists === true) {
-			c.status(200);
-			return c.json({ OTP_TTL });
+			return c.json({ OTP_TTL }, 200);
 		}
 
-		return c.json({ message: "user with such email doesn't exist in our database." });
+		return c.json({ message: "user with such email doesn't exist in our database." }, 400);
 	};
 
 	checkOtp = async (c: Context) => {
@@ -41,23 +40,19 @@ class UserController {
 
 		const { userExists, isOtpSent, isExpired, isOtpValid, token } = await userService.checkOtp(email, otp);
 		if (userExists === false) {
-			c.status(400);
-			return c.json({ message: "user with such email doesn't exist in our database." });
+			return c.json({ message: "user with such email doesn't exist in our database." }, 400);
 		}
 
 		if (isOtpSent) {
 			if (isExpired) {
-				c.status(400);
-				return c.json({ message: 'otp was expired.' });
+				return c.json({ message: 'otp was expired.' }, 400);
 			}
 
 			if (isOtpValid) {
-				c.status(200);
-				return c.json({ message: 'otp is valid.', token });
+				return c.json({ message: 'otp is valid.', token }, 200);
 			}
 
-			c.status(400);
-			return c.json({ message: 'otp is invalid.' });
+			return c.json({ message: 'otp is invalid.' }, 400);
 		}
 
 		return c.json({ message: 'otp was not sent.' }, 400);
@@ -70,8 +65,7 @@ class UserController {
 		const { userExists, user } = await userService.getUser(userId);
 
 		if (userExists === true) {
-			c.status(200);
-			return c.json({ user });
+			return c.json({ user }, 200);
 		}
 
 		return c.json({ message: 'user does not exist in our database.' }, 400);
