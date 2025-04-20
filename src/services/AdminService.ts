@@ -59,6 +59,11 @@ export class AdminService {
 	}) => {
 		const saltRounds = Number(process.env['SALT_ROUNDS']);
 
+		const user = await userRep.getUserByEmail(student.email);
+		if (user !== undefined) {
+			return { userExists: true };
+		}
+
 		const randomPassword = randomBytes(20).toString('hex');
 		const hashedPassword = await bcrypt.hash(randomPassword, saltRounds);
 
@@ -76,6 +81,8 @@ export class AdminService {
 			userId,
 			...student,
 		});
+
+		return { userExists: false };
 	};
 
 	editStudent = async (student: {
@@ -193,6 +200,11 @@ export class AdminService {
 		lastName: string;
 		patronymic: string;
 	}) => {
+		const user = await userRep.getUserByEmail(teacher.email);
+		if (user !== undefined) {
+			return { userExists: true };
+		}
+
 		const saltRounds = Number(process.env['SALT_ROUNDS']);
 
 		const randomPassword = randomBytes(20).toString('hex');
@@ -211,6 +223,7 @@ export class AdminService {
 		await teacherRep.addTeacher({
 			userId,
 		});
+		return { userExists: false };
 	};
 
 	editTeacher = async (teacher: {

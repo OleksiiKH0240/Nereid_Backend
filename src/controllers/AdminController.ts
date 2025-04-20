@@ -53,7 +53,18 @@ export class AdminController {
 		}
 
 		const { email, firstName, lastName, patronymic, educationalProgram, course, year } = body;
-		await adminService.addStudent({ email, firstName, lastName, patronymic, educationalProgram, course, year });
+		const { userExists } = await adminService.addStudent({
+			email,
+			firstName,
+			lastName,
+			patronymic,
+			educationalProgram,
+			course,
+			year,
+		});
+		if (userExists === true) {
+			return c.json({ message: `student with email '${email}' already exists.` }, 401);
+		}
 		return c.text('OK', 200);
 	};
 
@@ -182,7 +193,10 @@ export class AdminController {
 		}
 
 		const { email, firstName, lastName, patronymic } = body;
-		await adminService.addTeacher({ email, firstName, lastName, patronymic });
+		const { userExists } = await adminService.addTeacher({ email, firstName, lastName, patronymic });
+		if (userExists === true) {
+			return c.json({ message: `teacher with email '${email}' already exists.` }, 401);
+		}
 		return c.text('OK', 200);
 	};
 
