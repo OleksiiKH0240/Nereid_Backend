@@ -41,11 +41,11 @@ export class TeacherController {
 		});
 
 		if (teacherExists === false) {
-			return c.json({ message: `teacher with id '${teacherId}' doesn't exist.` }, 401);
+			return c.json({ message: `teacher with id '${teacherId}' doesn't exist.` }, 400);
 		}
 
 		if (isActive === false) {
-			return c.json({ message: `teacher with id '${teacherId}' is inactive.` }, 401);
+			return c.json({ message: `teacher with id '${teacherId}' is inactive.` }, 400);
 		}
 
 		return c.json({ message: 'teacher was edited successfully.' }, 200);
@@ -61,11 +61,11 @@ export class TeacherController {
 		const { isActive, teacherExists } = await teacherService.addFieldToTeacher(teacherId, { name, content });
 
 		if (teacherExists === false) {
-			return c.json({ message: `teacher with id '${teacherId}' doesn't exist.` }, 401);
+			return c.json({ message: `teacher with id '${teacherId}' doesn't exist.` }, 400);
 		}
 
 		if (isActive === false) {
-			return c.json({ message: `teacher with id '${teacherId}' is inactive.` }, 401);
+			return c.json({ message: `teacher with id '${teacherId}' is inactive.` }, 400);
 		}
 
 		return c.json({ message: 'field was successfully added.' }, 200);
@@ -80,15 +80,15 @@ export class TeacherController {
 		const { isActive, teacherExists, isExists, field } = await teacherService.deleteFieldFromTeacher(fieldId);
 
 		if (isExists === false) {
-			return c.json({ message: `field with id '${fieldId}' doesn't exist.` }, 401);
+			return c.json({ message: `field with id '${fieldId}' doesn't exist.` }, 400);
 		}
 
 		if (teacherExists === false) {
-			return c.json({ message: `teacher with id '${field!.teacherId}' doesn't exist.` }, 401);
+			return c.json({ message: `teacher with id '${field!.teacherId}' doesn't exist.` }, 400);
 		}
 
 		if (isActive === false) {
-			return c.json({ message: `teacher with id '${field!.teacherId}' is inactive.` }, 401);
+			return c.json({ message: `teacher with id '${field!.teacherId}' is inactive.` }, 400);
 		}
 
 		return c.json({ message: 'field was successfully deleted.' }, 200);
@@ -124,7 +124,7 @@ export class TeacherController {
 		);
 
 		if (disciplineExists === false) {
-			return c.json({ message: `discipline with id '${disciplineId}' doesn't exist.` }, 401);
+			return c.json({ message: `discipline with id '${disciplineId}' doesn't exist.` }, 400);
 		}
 
 		return c.json({
@@ -144,11 +144,11 @@ export class TeacherController {
 		const { disciplineExists, teacherExists } = await teacherService.takeDiscipline(teacherId, disciplineId);
 
 		if (teacherExists === false) {
-			return c.json({ message: `teacher with id '${teacherId}' doesn't exist.` }, 401);
+			return c.json({ message: `teacher with id '${teacherId}' doesn't exist.` }, 400);
 		}
 
 		if (disciplineExists === false) {
-			return c.json({ message: `discipline with id '${disciplineId}' doesn't exist.` }, 401);
+			return c.json({ message: `discipline with id '${disciplineId}' doesn't exist.` }, 400);
 		}
 
 		return c.json({ message: 'success.' }, 200);
@@ -164,11 +164,11 @@ export class TeacherController {
 		const { disciplineExists, teacherExists } = await teacherService.releaseDiscipline(teacherId, disciplineId);
 
 		if (teacherExists === false) {
-			return c.json({ message: `teacher with id '${teacherId}' doesn't exist.` }, 401);
+			return c.json({ message: `teacher with id '${teacherId}' doesn't exist.` }, 400);
 		}
 
 		if (disciplineExists === false) {
-			return c.json({ message: `discipline with id '${disciplineId}' doesn't exist.` }, 401);
+			return c.json({ message: `discipline with id '${disciplineId}' doesn't exist.` }, 400);
 		}
 
 		return c.json({ message: 'success.' }, 200);
@@ -189,11 +189,11 @@ export class TeacherController {
 		});
 
 		if (teacherExists === false) {
-			return c.json({ message: `teacher with userId '${userId}' doesn't exist.` }, 401);
+			return c.json({ message: `teacher with userId '${userId}' doesn't exist.` }, 400);
 		}
 
 		if (isTeacherActive === false) {
-			return c.json({ message: `teacher with userId '${userId}' is inactive.` }, 401);
+			return c.json({ message: `teacher with userId '${userId}' is inactive.` }, 400);
 		}
 
 		return c.json({ message: 'field was successfully added.' }, 200);
@@ -210,11 +210,11 @@ export class TeacherController {
 		const { teacherExists, isTeacherActive } = await teacherService.deleteFieldFromDiscipline(fieldId, userId);
 
 		if (teacherExists === false) {
-			return c.json({ message: `teacher with userId '${userId}' doesn't exist.` }, 401);
+			return c.json({ message: `teacher with userId '${userId}' doesn't exist.` }, 400);
 		}
 
 		if (isTeacherActive === false) {
-			return c.json({ message: `teacher with userId '${userId}' is inactive.` }, 401);
+			return c.json({ message: `teacher with userId '${userId}' is inactive.` }, 400);
 		}
 
 		return c.json({ message: 'field was successfully deleted.' }, 200);
@@ -246,11 +246,11 @@ export class TeacherController {
 		);
 
 		if (teacherExists === false) {
-			return c.json({ message: `teacher with userId '${userId}' doesn't exist.` }, 401);
+			return c.json({ message: `teacher with userId '${userId}' doesn't exist.` }, 400);
 		}
 
 		if (isTeacherActive === false) {
-			return c.json({ message: `teacher with userId '${userId}' is inactive.` }, 401);
+			return c.json({ message: `teacher with userId '${userId}' is inactive.` }, 400);
 		}
 
 		if (invalidSemester) {

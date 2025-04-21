@@ -9,7 +9,7 @@ export class AdminController {
 		const admin = await adminService.getAdminByUserId(userId);
 
 		if (admin.userExists === false) {
-			return c.json({ message: `admin with userId '${userId}' doesn't exist.` }, 401);
+			return c.json({ message: `admin with userId '${userId}' doesn't exist.` }, 400);
 		}
 
 		return c.json(admin, 200);
@@ -63,7 +63,7 @@ export class AdminController {
 			year,
 		});
 		if (userExists === true) {
-			return c.json({ message: `student with email '${email}' already exists.` }, 401);
+			return c.json({ message: `student with email '${email}' already exists.` }, 400);
 		}
 		return c.text('OK', 200);
 	};
@@ -117,7 +117,7 @@ export class AdminController {
 		});
 
 		if (studentExists === false) {
-			return c.json({ message: `student with id '${studentId}' doesn't exist.` }, 401);
+			return c.json({ message: `student with id '${studentId}' doesn't exist.` }, 400);
 		}
 
 		return c.json({ message: 'student was edited successfully.' }, 200);
@@ -166,7 +166,7 @@ export class AdminController {
 		});
 
 		if (studentExists === false) {
-			return c.json({ message: `some students in provided list don't exist.` }, 401);
+			return c.json({ message: `some students in provided list don't exist.` }, 400);
 		}
 
 		return c.json({ message: 'students were edited successfully.' }, 200);
@@ -195,7 +195,7 @@ export class AdminController {
 		const { email, firstName, lastName, patronymic } = body;
 		const { userExists } = await adminService.addTeacher({ email, firstName, lastName, patronymic });
 		if (userExists === true) {
-			return c.json({ message: `teacher with email '${email}' already exists.` }, 401);
+			return c.json({ message: `teacher with email '${email}' already exists.` }, 400);
 		}
 		return c.text('OK', 200);
 	};
@@ -222,7 +222,7 @@ export class AdminController {
 		});
 
 		if (teacherExists === false) {
-			return c.json({ message: `teacher with id '${teacherId}' doesn't exist.` }, 401);
+			return c.json({ message: `teacher with id '${teacherId}' doesn't exist.` }, 400);
 		}
 
 		return c.json({ message: 'teacher was edited successfully.' }, 200);
@@ -248,7 +248,7 @@ export class AdminController {
 		);
 
 		if (disciplineExists === false) {
-			return c.json({ message: `discipline with id '${disciplineId}' doesn't exist.` }, 401);
+			return c.json({ message: `discipline with id '${disciplineId}' doesn't exist.` }, 400);
 		}
 
 		return c.json({

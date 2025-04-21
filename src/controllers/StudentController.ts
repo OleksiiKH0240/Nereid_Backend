@@ -215,7 +215,7 @@ export class StudentController {
 		}
 
 		if (disciplineExists === false) {
-			return c.json({ message: `discipline with id: ${c.req.param('id')} does not exist.` }, 400);
+			return c.json({ message: `some disciplines do not exist.` }, 400);
 		}
 
 		if (exceededCreditsMax === true) {
