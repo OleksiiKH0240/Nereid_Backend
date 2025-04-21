@@ -120,6 +120,12 @@ export class TeacherRep {
 	editTeacherById = async (teacherId: number, teacher: {
 		isActive?: boolean;
 	}) => {
+		const isAnyFieldDefined = Object.values(teacher).some((value) => value !== undefined);
+
+		if (isAnyFieldDefined === false) {
+			return;
+		}
+
 		await this.db
 			.update(teachers)
 			.set({

@@ -49,6 +49,12 @@ class UserRep {
 	};
 
 	editUserById = async (userId: number, user: Partial<typeof users.$inferInsert>) => {
+		const isAnyFieldDefined = Object.values(user).some((value) => value !== undefined);
+
+		if (isAnyFieldDefined === false) {
+			return;
+		}
+
 		await this.db
 			.update(users)
 			.set(user)

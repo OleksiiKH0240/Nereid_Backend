@@ -228,6 +228,35 @@ export class AdminController {
 		return c.json({ message: 'teacher was edited successfully.' }, 200);
 	};
 
+	editTeachers = async (c: Context) => {
+		const body = await c.req.json().catch(() => {}); // Prevent crash if JSON is empty
+		if (body === undefined) {
+			return c.json({ message: 'Empty request body' }, 400);
+		}
+
+		const {
+			teacherIds,
+			isActive,
+		} = body;
+
+		if (!Array.isArray(teacherIds)) {
+			return c.json({ message: 'teacherIds should be an array.' }, 400);
+		}
+		if (teacherIds.length === 0) {
+			return c.json({ message: 'teacherIds array should not be empty.' }, 400);
+		}
+
+		const { teacherExists } = await adminService.editTeachers(teacherIds, {
+			isActive,
+		});
+
+		if (teacherExists === false) {
+			return c.json({ message: `some teachers in provided list don't exist.` }, 400);
+		}
+
+		return c.json({ message: 'teachers were edited successfully.' }, 200);
+	};
+
 	getAllDisciplines = async (c: Context) => {
 		const allDisciplines = await adminService.getAllDisciplines();
 		return c.json(allDisciplines, 200);

@@ -136,6 +136,12 @@ export class StudentRep {
 	};
 
 	editStudentById = async (studentId: number, student: Partial<typeof students.$inferSelect>) => {
+		const isAnyFieldDefined = Object.values(student).some((value) => value !== undefined);
+
+		if (isAnyFieldDefined === false) {
+			return;
+		}
+
 		await this.db
 			.update(students)
 			.set(student)
@@ -155,6 +161,12 @@ export class StudentRep {
 		canSelect?: boolean;
 	}, student: Partial<typeof students.$inferSelect>) => {
 		if (Object.keys(filters).length === 0) return;
+
+		const isAnyFieldDefined = Object.values(student).some((value) => value !== undefined);
+
+		if (isAnyFieldDefined === false) {
+			return;
+		}
 
 		const updateQuery = this.db.update(students).set(student);
 

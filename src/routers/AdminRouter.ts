@@ -20,6 +20,7 @@ adminRouter.patch('/edit-students', authenticate, adminValidation, adminControll
 adminRouter.get('/get-all-teachers', authenticate, adminValidation, adminController.getAllTeachers);
 adminRouter.post('/add-teacher', authenticate, adminValidation, adminController.addTeacher);
 adminRouter.patch('/edit-teacher/:id', authenticate, adminValidation, adminController.editTeacher);
+adminRouter.patch('/edit-teachers', authenticate, adminValidation, adminController.editTeachers);
 
 adminRouter.get('/get-all-disciplines', authenticate, adminValidation, adminController.getAllDisciplines);
 adminRouter.get('/get-discipline/:id', authenticate, adminValidation, adminController.getDisciplineById);

@@ -256,6 +256,30 @@ export class AdminService {
 		await teacherRep.editTeacherById(currTeacher.id, {
 			isActive: teacher.isActive,
 		});
+
+		return {
+			teacherExists: true,
+		};
+	};
+
+	editTeachers = async (teacherIds: number[], fieldsToChange: {
+		isActive?: boolean;
+	}) => {
+		const promises = teacherIds.map(async (teacherId) => await teacherRep.getTeacherById(teacherId));
+		const teachers = await Promise.all(promises);
+		const isEveryTeacherExists = teachers.every((teacher) => teacher !== undefined);
+		if (!isEveryTeacherExists) {
+			return { teacherExists: false };
+		}
+
+		const promises_ = teacherIds.map(async (teacherId) =>
+			await teacherRep.editTeacherById(teacherId, {
+				isActive: fieldsToChange.isActive,
+			})
+		);
+
+		await Promise.all(promises_);
+
 		return {
 			teacherExists: true,
 		};
