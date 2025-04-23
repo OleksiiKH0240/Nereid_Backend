@@ -52,7 +52,7 @@ export class AdminController {
 			return c.json({ message: 'Empty request body' }, 400);
 		}
 
-		const { email, firstName, lastName, patronymic, educationalProgram, course, year } = body;
+		const { email, firstName, lastName, patronymic, educationalProgram, course, year, canSelect } = body;
 		const { userExists } = await adminService.addStudent({
 			email,
 			firstName,
@@ -61,6 +61,7 @@ export class AdminController {
 			educationalProgram,
 			course,
 			year,
+			canSelect,
 		});
 		if (userExists === true) {
 			return c.json({ message: `student with email '${email}' already exists.` }, 400);

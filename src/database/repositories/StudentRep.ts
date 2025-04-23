@@ -122,6 +122,7 @@ export class StudentRep {
 		educationalProgram: string;
 		course: string;
 		year: string;
+		canSelect: boolean;
 	}) => {
 		await this.db
 			.insert(students)
@@ -131,6 +132,7 @@ export class StudentRep {
 					educationalProgram: student.educationalProgram,
 					course: student.course,
 					year: student.year,
+					canSelect: student.canSelect,
 				},
 			);
 	};

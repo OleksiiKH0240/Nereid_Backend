@@ -56,6 +56,7 @@ export class AdminService {
 		educationalProgram: string;
 		course: string;
 		year: string;
+		canSelect: boolean;
 	}) => {
 		const saltRounds = Number(process.env['SALT_ROUNDS']);
 
@@ -77,9 +78,13 @@ export class AdminService {
 			roleId,
 		});
 
+		const { educationalProgram, course, year, canSelect } = student;
 		await studentRep.addStudent({
 			userId,
-			...student,
+			educationalProgram,
+			course,
+			year,
+			canSelect,
 		});
 
 		return { userExists: false };
