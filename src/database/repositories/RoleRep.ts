@@ -3,7 +3,7 @@ import type { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { db } from '../databaseConnection.ts';
 import { roles } from '../schemas/roles.ts';
 
-class UserRep {
+class RoleRep {
 	private db: NodePgDatabase;
 	constructor(dbClient = db) {
 		this.db = dbClient;
@@ -38,4 +38,4 @@ class UserRep {
 	};
 }
 
-export default new UserRep();
+export default new RoleRep();

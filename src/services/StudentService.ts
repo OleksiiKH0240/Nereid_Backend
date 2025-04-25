@@ -31,12 +31,13 @@ export class StudentService {
 		}
 
 		const disciplines = await disciplineRep.getAllDisciplinesBySemester(semester);
+		const activeDisciplines = disciplines.filter((discipline) => discipline.isActive === true);
 
 		return {
 			invalidSemester: false,
 			studentExists: true,
 			studentIsActive: true,
-			disciplines,
+			disciplines: activeDisciplines,
 			minimumCredits: semester === '1' ? student.semester1MinCredits : student.semester2MinCredits,
 			maximumCredits: semester === '1' ? student.semester1MaxCredits : student.semester2MaxCredits,
 			currentCredits: semester === '1' ? student.semester1Credits : student.semester2Credits,

@@ -50,6 +50,8 @@ export class StudentDisciplineRelationRep {
 	getStudentsByDiscipline = async (disciplineId: number) => {
 		const disciplineStudents = await this.db
 			.select({
+				id: students.id,
+				userId: users.id,
 				firstName: users.firstName,
 				lastName: users.lastName,
 				patronymic: users.patronymic,

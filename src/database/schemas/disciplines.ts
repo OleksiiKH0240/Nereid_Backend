@@ -1,4 +1,4 @@
-import { integer, pgEnum, pgTable, text, varchar } from 'drizzle-orm/pg-core';
+import { boolean, integer, pgEnum, pgTable, text, varchar } from 'drizzle-orm/pg-core';
 
 export const semesterEnum = pgEnum('semester_enum', ['1', '2']);
 
@@ -8,4 +8,5 @@ export const disciplines = pgTable('disciplines', {
 	credits: integer().notNull(),
 	semester: semesterEnum().notNull(),
 	description: text(),
+	isActive: boolean().default(true),
 });

@@ -288,6 +288,28 @@ export class AdminController {
 		}, 200);
 	};
 
+	editDisciplines = async (c: Context) => {
+		const body = await c.req.json().catch(() => {}); // Prevent crash if JSON is empty
+		if (body === undefined) {
+			return c.json({ message: 'Empty request body' }, 400);
+		}
+
+		const { isActive, disciplineIds } = body;
+		if (!Array.isArray(disciplineIds)) {
+			return c.json({ message: 'disciplineIds should be an array.' }, 400);
+		}
+		if (isActive === undefined) {
+			return c.json({ message: 'isActive should be provided.' }, 400);
+		}
+
+		const { disciplineExists } = await adminService.editDisciplines(disciplineIds, { isActive });
+		if (disciplineExists === false) {
+			return c.json({ message: `some disciplines in provided list don't exist.` }, 400);
+		}
+
+		return c.text('OK', 200);
+	};
+
 	addDiscipline = async (c: Context) => {
 		const body = await c.req.json().catch(() => {}); // Prevent crash if JSON is empty
 		if (body === undefined) {
@@ -309,7 +331,11 @@ export class AdminController {
 			return c.json({ message: 'No disciplineId was provided.' }, 400);
 		}
 
-		await adminService.deleteDiscipline(disciplineId);
+		const { disciplineExists } = await adminService.deleteDiscipline(disciplineId);
+		if (disciplineExists === false) {
+			return c.json({ message: `discipline with id '${disciplineId}' doesn't exist.` }, 400);
+		}
+
 		return c.text('OK', 200);
 	};
 
@@ -322,6 +348,11 @@ export class AdminController {
 		const { teacherId, disciplineId } = body;
 		await adminService.releaseTeacherFromDiscipline(teacherId, disciplineId);
 		return c.text('OK', 200);
+	};
+
+	getDisciplineSelectionState = async (c: Context) => {
+		const state = await adminService.getDisciplineSelectionState();
+		return c.json(state, 200);
 	};
 
 	lockDisciplineSelection = async (c: Context) => {
@@ -357,6 +388,11 @@ export class AdminController {
 
 		return c.text('success', 200);
 	};
+
+	// resetStudentsSelection = async (c: Context) => {
+	// 	await adminService.resetStudentsSelection();
+	// 	return c.text('OK', 200);
+	// };
 }
 
 export default new AdminController();

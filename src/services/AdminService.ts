@@ -10,6 +10,10 @@ import studentRep from '../database/repositories/StudentRep.ts';
 import teacherRep from '../database/repositories/TeacherRep.ts';
 import studentService from './StudentService.ts';
 
+const disciplineSelectionState: { isSelectionLocked?: boolean } = {
+	isSelectionLocked: undefined,
+};
+
 export class AdminService {
 	getAdminByUserId = async (userId: number) => {
 		const user = await userRep.getUserById(userId);
@@ -316,6 +320,48 @@ export class AdminService {
 		};
 	};
 
+	editDisciplines = async (disciplineIds: number[], fieldsToChange: { isActive: boolean }) => {
+		const promises = disciplineIds.map(async (disciplineId) => await disciplineRep.getDisciplineById(disciplineId));
+		const disciplines = await Promise.all(promises);
+		const isEveryDisciplineExists = disciplines.every((discipline) => discipline !== undefined);
+		if (!isEveryDisciplineExists) {
+			return { disciplineExists: false };
+		}
+
+		for (const discipline of disciplines) {
+			await disciplineRep.editDisciplineById(discipline.id, {
+				isActive: fieldsToChange.isActive,
+			});
+			if (fieldsToChange.isActive === false) {
+				await this.clearDisciplineRelations(discipline);
+			}
+		}
+
+		return {
+			disciplineExists: true,
+		};
+	};
+
+	clearDisciplineRelations = async (discipline: { id: number; semester: '1' | '2' }) => {
+		const students = await studentDisciplineRelationRep.getStudentsByDiscipline(discipline.id);
+		const studentUserIds = students.map((student) => student.userId);
+
+		const promises = studentUserIds.map(async (userId) => {
+			await studentService.deselectDiscipline(userId, [discipline.id], discipline.semester);
+		});
+		await Promise.all(promises);
+
+		await teacherDisciplineRelationRep.getTeachersByDiscipline(discipline.id);
+		// eslint-disable-next-line unicorn/no-await-expression-member
+		const teacherIds = (await teacherDisciplineRelationRep.getTeachersByDiscipline(discipline.id)).map(
+			(teacher) => teacher.id,
+		);
+		const promises_ = teacherIds.map(async (teacherId) => {
+			await teacherDisciplineRelationRep.deleteTeacherFromDiscipline(teacherId, discipline.id);
+		});
+		await Promise.all(promises_);
+	};
+
 	addDiscipline = async (discipline: { name: string; semester: '1' | '2'; credits: number }) => {
 		if (!['1', '2'].includes(discipline.semester)) {
 			return { invalidSemester: true };
@@ -326,19 +372,38 @@ export class AdminService {
 	};
 
 	deleteDiscipline = async (disciplineId: number) => {
+		const discipline = await disciplineRep.getDisciplineById(disciplineId);
+		if (discipline === undefined) {
+			return { disciplineExists: false };
+		}
+
 		await disciplineRep.deleteDiscipline(disciplineId);
+		await this.clearDisciplineRelations(discipline);
+
+		return { disciplineExists: true };
 	};
 
 	releaseTeacherFromDiscipline = async (teacherId: number, disciplineId: number) => {
 		await teacherDisciplineRelationRep.deleteTeacherFromDiscipline(teacherId, disciplineId);
 	};
 
+	getDisciplineSelectionState = async () => {
+		if (disciplineSelectionState.isSelectionLocked === undefined) {
+			disciplineSelectionState.isSelectionLocked = true;
+			await this.lockDisciplineSelection();
+		}
+
+		return disciplineSelectionState;
+	};
+
 	lockDisciplineSelection = async () => {
-		await studentRep.editStudentBy({ isActive: true }, { canSelect: false });
+		await studentRep.editStudentBy({ isActive: true, canSelect: true }, { canSelect: false });
+		disciplineSelectionState.isSelectionLocked = true;
 	};
 
 	unlockDisciplineSelection = async () => {
 		await studentRep.editStudentBy({ isActive: true, canSelect: false }, { canSelect: true });
+		disciplineSelectionState.isSelectionLocked = false;
 	};
 
 	getStudentsForAllDisciplines = async (semester: '1' | '2') => {

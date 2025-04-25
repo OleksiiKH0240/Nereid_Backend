@@ -4,7 +4,7 @@ import { users } from './users.ts';
 export const students = pgTable('students', {
 	id: integer().primaryKey().generatedAlwaysAsIdentity(),
 	userId: integer().notNull().unique().references(() => users.id),
-	year: varchar({ length: 255 }).notNull(),
+	year: varchar({ length: 255 }),
 	educationalProgram: varchar({ length: 255 }).notNull(),
 	course: varchar({ length: 255 }).notNull(),
 	semester1MinCredits: integer().notNull().default(0),

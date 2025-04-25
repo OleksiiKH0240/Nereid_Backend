@@ -102,7 +102,9 @@ export class TeacherService {
 
 	getAllDisciplines = async () => {
 		const allDisciplines = await disciplineRep.getAllDisciplines();
-		return allDisciplines;
+		const activeDisciplines = allDisciplines.filter((discipline) => discipline.isActive === true);
+
+		return activeDisciplines;
 	};
 
 	getAllTakenDisciplines = async (teacherId: number) => {

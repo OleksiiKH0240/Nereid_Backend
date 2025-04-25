@@ -9,6 +9,17 @@ export class TeacherDisciplineRelationRep {
 		this.db = dbClient;
 	}
 
+	getTeachersByDiscipline = async (disciplineId: number) => {
+		const disciplineTeachers = await this.db
+			.select({
+				id: teacherDiscipleRelations.teacherId,
+			})
+			.from(teacherDiscipleRelations)
+			.where(eq(teacherDiscipleRelations.disciplineId, disciplineId));
+
+		return disciplineTeachers;
+	};
+
 	addTeacherToDiscipline = async (teacherId: number, disciplineId: number) => {
 		const result = await this.db
 			.select()

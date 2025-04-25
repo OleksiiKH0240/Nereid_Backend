@@ -77,6 +77,7 @@ export class DisciplineRep {
 		description?: string;
 		semester?: '1' | '2';
 		credits?: number;
+		isActive?: boolean;
 	}) => {
 		await this.db
 			.update(disciplines)

@@ -24,6 +24,7 @@ adminRouter.patch('/edit-teachers', authenticate, adminValidation, adminControll
 
 adminRouter.get('/get-all-disciplines', authenticate, adminValidation, adminController.getAllDisciplines);
 adminRouter.get('/get-discipline/:id', authenticate, adminValidation, adminController.getDisciplineById);
+adminRouter.patch('edit-disciplines', authenticate, adminValidation, adminController.editDisciplines);
 adminRouter.post('/add-discipline', authenticate, adminValidation, adminController.addDiscipline);
 adminRouter.delete('/delete-discipline/:id', authenticate, adminValidation, adminController.deleteDiscipline);
 adminRouter.patch(
@@ -33,6 +34,12 @@ adminRouter.patch(
 	adminController.releaseTeacherFromDiscipline,
 );
 
+adminRouter.get(
+	'/get-discipline-selection-state',
+	authenticate,
+	adminValidation,
+	adminController.getDisciplineSelectionState,
+);
 adminRouter.patch('/lock-discipline-selection', authenticate, adminValidation, adminController.lockDisciplineSelection);
 adminRouter.patch(
 	'/unlock-discipline-selection',
@@ -53,3 +60,5 @@ adminRouter.patch(
 	adminValidation,
 	adminController.recalculateStudentsCredits,
 );
+
+// adminRouter.patch('/reset-students-selection', authenticate, adminValidation, adminController.resetStudentsSelection);
