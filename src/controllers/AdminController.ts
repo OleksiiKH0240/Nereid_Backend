@@ -46,6 +46,35 @@ export class AdminController {
 		return c.json(students);
 	};
 
+	addStudentsWithCsv = async (c: Context) => {
+		const body = await c.req.json().catch(() => {}); // Prevent crash if JSON is empty
+		if (body === undefined) {
+			return c.json({ message: 'Empty request body' }, 400);
+		}
+
+		const { csvText } = body;
+		if (csvText === undefined) {
+			return c.json({ message: 'csvText is required' }, 400);
+		}
+
+		const { invalidCsv, userExists } = await adminService.addStudentsWithCsv(csvText);
+		if (invalidCsv) {
+			return c.json({ message: `Invalid csv.` }, 400);
+		}
+
+		if (userExists) {
+			return c.json({ message: `Some students already exist.` }, 400);
+		}
+
+		return c.text('OK', 200);
+	};
+
+	getStudentsCsvTemplate = async (c: Context) => {
+		const csvText = await adminService.getStudentsCsvTemplate();
+
+		return c.json({ csvText }, 200);
+	};
+
 	addStudent = async (c: Context) => {
 		const body = await c.req.json().catch(() => {}); // Prevent crash if JSON is empty
 		if (body === undefined) {

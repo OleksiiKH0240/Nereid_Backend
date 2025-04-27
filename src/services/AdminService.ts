@@ -1,5 +1,6 @@
 import { Parser } from '@json2csv/plainjs';
 import bcrypt from 'bcrypt';
+import { parse } from 'csv-parse';
 import { randomBytes } from 'node:crypto';
 import disciplineRep from '~/database/repositories/DisciplineRep.ts';
 import roleRep from '~/database/repositories/RoleRep.ts';
@@ -52,6 +53,47 @@ export class AdminService {
 		return students;
 	};
 
+	addStudentsWithCsv = async (csv: string) => {
+		const endlineIdx = csv.indexOf('\n');
+		if (endlineIdx === -1) {
+			return { invalidCsv: true };
+		}
+
+		const headers = csv.slice(0, endlineIdx);
+		if (headers !== 'lastName,firstName,patronymic,email,educationalProgram,course,year') {
+			return { invalidCsv: true };
+		}
+
+		const parser = parse(csv, {
+			columns: true, // first line as keys
+			skip_empty_lines: true,
+		});
+
+		const students = await parser.toArray() as {
+			lastName: string;
+			firstName: string;
+			patronymic: string;
+			email: string;
+			educationalProgram: string;
+			course: string;
+			year: string;
+		}[];
+
+		for (const student of students) {
+			const { userExists } = await this.addStudent(student);
+			if (userExists) {
+				return { userExists: true };
+			}
+		}
+
+		return { invalidCsv: false, userExists: false };
+	};
+
+	getStudentsCsvTemplate = async () => {
+		const template = 'lastName,firstName,patronymic,email,educationalProgram,course,year\n';
+		return template;
+	};
+
 	addStudent = async (student: {
 		email: string;
 		firstName: string;
@@ -59,8 +101,8 @@ export class AdminService {
 		patronymic: string;
 		educationalProgram: string;
 		course: string;
-		year: string;
-		canSelect: boolean;
+		year?: string;
+		canSelect?: boolean;
 	}) => {
 		const saltRounds = Number(process.env['SALT_ROUNDS']);
 

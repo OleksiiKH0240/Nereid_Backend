@@ -121,8 +121,8 @@ export class StudentRep {
 		userId: number;
 		educationalProgram: string;
 		course: string;
-		year: string;
-		canSelect: boolean;
+		year?: string;
+		canSelect?: boolean;
 	}) => {
 		await this.db
 			.insert(students)
